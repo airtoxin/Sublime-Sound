@@ -18,7 +18,7 @@ class EventSound(sublime_plugin.EventListener):
         thread.start()
 
     def _osx_play(self, filename):
-        call(["afplay", sublime.packages_path() + "/Sound/sounds/" + filename + ".mp3"])
+        call(["afplay", sublime.packages_path() + "/Sublime-Sound/sounds/" + filename + ".mp3"])
 
     def on_new_async(self, view):
         # Called when a new buffer is created. Runs in a separate thread, and does not block the application.
