@@ -24,6 +24,7 @@ __Package Control: Install Package__ > Select __Sound__
 + __on_save__: played when file view has been saved.
 + __on_close__: played when a file view is closed.
 + __on_clone__: played when a file view is cloned from an existing one.
++ __on_modify__: played when a file view is changed.
 
 ##Custom Sounds
 

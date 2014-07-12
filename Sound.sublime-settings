@@ -1,0 +1,7 @@
+{
+    "random_sounds": {
+        "on_modify": {
+            "num_files": 8
+        }
+    }
+}
