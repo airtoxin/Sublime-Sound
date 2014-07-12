@@ -1,6 +1,8 @@
 import sublime, sublime_plugin
-from subprocess import check_output, call
-import threading, random, os
+from subprocess import call
+from os.path import join
+from random import randrange
+import threading
 
 class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
@@ -22,13 +24,13 @@ class EventSound(sublime_plugin.EventListener):
 
     def _osx_play(self, filename):
         self.on_play_flag = False
-        file_path = os.path.join(sublime.packages_path(), "Sublime-Sound", "sounds", filename) + ".mp3"
+        file_path = join(sublime.packages_path(), "Sublime-Sound", "sounds", filename) + ".mp3"
         call(["afplay", file_path])
 
     def _osx_random_play(self, dirname):
         self.on_play_flag = False
         num_files = sublime.load_settings("Sound.sublime-settings").get("random_sounds")["on_modify"]["num_files"]
-        file_path = os.path.join(sublime.packages_path(), "Sublime-Sound", "random_sounds", dirname, str(random.randrange(1, num_files))) + ".mp3"
+        file_path = join(sublime.packages_path(), "Sublime-Sound", "random_sounds", dirname, str(randrange(1, num_files))) + ".mp3"
         call(["afplay", file_path])
 
     def on_new_async(self, view):
