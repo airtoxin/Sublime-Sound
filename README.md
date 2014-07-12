@@ -13,6 +13,8 @@ __Supported Platforms__
 
 ##Installation
 
+You can install from [Package Control](https://sublime.wbond.net/).
+
 __Package Control: Install Package__ > Select __Sound__
 
 ##Event Sounds
