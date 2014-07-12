@@ -1,6 +1,6 @@
 import sublime, sublime_plugin
 from subprocess import check_output, call
-import threading, random
+import threading, random, os
 
 class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
@@ -22,12 +22,14 @@ class EventSound(sublime_plugin.EventListener):
 
     def _osx_play(self, filename):
         self.on_play_flag = False
-        call(["afplay", "{0}/Sublime-Sound/sounds/{1}.mp3".format(sublime.packages_path(), filename)])
+        file_path = os.path.join(sublime.packages_path(), "Sublime-Sound", "sounds", filename) + ".mp3"
+        call(["afplay", file_path])
 
     def _osx_random_play(self, dirname):
         self.on_play_flag = False
         num_files = sublime.load_settings("Sound.sublime-settings").get("random_sounds")["on_modify"]["num_files"]
-        call(["afplay", "{0}/Sublime-Sound/random_sounds/{1}/{2}.mp3".format(sublime.packages_path(), dirname, random.randrange(1, num_files))])
+        file_path = os.path.join(sublime.packages_path(), "Sublime-Sound", "random_sounds", dirname, str(random.randrange(1, num_files))) + ".mp3"
+        call(["afplay", file_path])
 
     def on_new_async(self, view):
         # Called when a new buffer is created. Runs in a separate thread, and does not block the application.
