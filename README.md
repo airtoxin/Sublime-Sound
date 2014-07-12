@@ -28,7 +28,21 @@ __Package Control: Install Package__ > Select __Sound__
 
 ##Custom Sounds
 
-You can customize sounds by replace file.
-The file exists __PackageDirectory > Sound > sounds__.
+You can customize sounds by replace file. (Only supports mp3 file)
 
-Only supports mp3 file.
+###Single sound file
+
++ on_new
++ on_load
++ on_save
++ on_close
++ on_clone
+
+These events sound file exists on __PackageDirectory > Sound > sounds__ directory.
+
+###Multi sounds file
+
++ on_modify
+
+These events sound file exists on __PackageDirectory > random_sounds > event_name__ directory.
+
