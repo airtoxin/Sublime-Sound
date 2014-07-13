@@ -16,7 +16,6 @@ class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
         super(EventSound, self).__init__(*args, **kwargs)
 
-        self.settings = sublime.load_settings("Sound.sublime-settings")
         if sublime.platform() == "osx":
             self.play = self.osx_play
         elif sublime.platform() == "linux":
@@ -26,7 +25,7 @@ class EventSound(sublime_plugin.EventListener):
 
     @thread
     def osx_play(self, event_name):
-        events = self.settings.get("events")
+        events = sublime.load_settings("Sound.sublime-settings").get("events")
         if not event_name in events: return
         self.on_play_flag = False
         num_files = events[event_name]["num_files"]
