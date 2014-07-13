@@ -2,7 +2,7 @@ import sublime, sublime_plugin
 from subprocess import call
 from os.path import join
 from random import randrange
-import threading
+from threading import Thread
 
 class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
@@ -69,5 +69,5 @@ class EventSound(sublime_plugin.EventListener):
 
 def thread(func):
     def wrapper(*args, **kwargs):
-        threading.Thread(target=lambda: func(*args, **kwargs)).start()
+        Thread(target=lambda: func(*args, **kwargs)).start()
     return wrapper
