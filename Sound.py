@@ -1,9 +1,16 @@
 import sublime, sublime_plugin
 from subprocess import call
-from os.path import join
+from os.path import join, normpath, dirname, abspath
+import sys
 from random import randrange
-from threading import Thread
-from functools import wraps
+
+__file__ = normpath(abspath(__file__))
+__path__ = dirname(__file__)
+libs_path = join(__path__, 'libs')
+if libs_path not in sys.path:
+    sys.path.insert(0, libs_path)
+
+from decorators import thread
 
 class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
@@ -16,10 +23,8 @@ class EventSound(sublime_plugin.EventListener):
         elif sublime.platform() == "windows":
             pass  # TODO
 
+    @thread
     def osx_play(self, event_name, random=False):
-        Thread(target=lambda: self._osx_play(event_name, random=random)).start()
-
-    def _osx_play(self, event_name, random=False):
         self.on_play_flag = False
         if not random:
             file_path = join(sublime.packages_path(), "Sound", "sounds", event_name) + ".mp3"
