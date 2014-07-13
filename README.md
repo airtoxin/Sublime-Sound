@@ -17,7 +17,7 @@ You can install from [Package Control](https://sublime.wbond.net/).
 
 __Package Control: Install Package__ > Select __Sound__
 
-##Event Sounds
+##Event Lists
 
 + __on_new__: played when new file buffer is created.
 + __on_load__: played when the file is finished loading.
@@ -28,21 +28,14 @@ __Package Control: Install Package__ > Select __Sound__
 
 ##Custom Sounds
 
-You can customize sounds by replace file. (Only supports mp3 file)
+You can customize playing sounds by replace file. (only supports mp3 file now)
 
-###Single sound file
+Replace mp3 on __Preference > Package Settings > Sound > Open sounds > event_name__ directory.
 
-+ on_new
-+ on_load
-+ on_save
-+ on_close
-+ on_clone
+###Random playing sounds
 
-These events sound file exists on __PackageDirectory > Sound > sounds__ directory.
+By default, 8 defferent sounds played in each key types(on modify event). In this way, you can also be assigned to the event multiple sounds.
 
-###Multi sounds file
-
-+ on_modify
-
-These events sound file exists on __PackageDirectory > random_sounds > event_name__ directory.
-
+1. Put your sound files on event name directory
+2. Rename these files sequentially
+3. Edit num_files property in _settings - User_
