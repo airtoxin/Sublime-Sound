@@ -20,10 +20,10 @@ class EventSound(sublime_plugin.EventListener):
     def osx_play(self, event_name, random=False):
         self.on_play_flag = False
         if not random:
-            file_path = join(sublime.packages_path(), "Sublime-Sound", "sounds", event_name) + ".mp3"
+            file_path = join(sublime.packages_path(), "Sound", "sounds", event_name) + ".mp3"
         else:
             num_files = sublime.load_settings("Sound.sublime-settings").get("random_sounds")[event_name]["num_files"]
-            file_path = join(sublime.packages_path(), "Sublime-Sound", "random_sounds", event_name, str(randrange(1, num_files))) + ".mp3"
+            file_path = join(sublime.packages_path(), "Sound", "random_sounds", event_name, str(randrange(1, num_files))) + ".mp3"
         call(["afplay", file_path])
 
     def on_new_async(self, view):
