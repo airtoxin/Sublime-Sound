@@ -16,6 +16,7 @@ class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
         super(EventSound, self).__init__(*args, **kwargs)
 
+        self.settings = sublime.load_settings("Sound.sublime-settings")
         if sublime.platform() == "osx":
             self.play = self.osx_play
         elif sublime.platform() == "linux":
@@ -24,13 +25,12 @@ class EventSound(sublime_plugin.EventListener):
             pass  # TODO
 
     @thread
-    def osx_play(self, event_name, random=False):
+    def osx_play(self, event_name):
+        events = self.settings.get("events")
+        if not event_name in events: return
         self.on_play_flag = False
-        if not random:
-            file_path = join(sublime.packages_path(), "Sound", "sounds", event_name) + ".mp3"
-        else:
-            num_files = sublime.load_settings("Sound.sublime-settings").get("random_sounds")[event_name]["num_files"]
-            file_path = join(sublime.packages_path(), "Sound", "random_sounds", event_name, str(randrange(1, num_files))) + ".mp3"
+        num_files = events[event_name]["num_files"]
+        file_path = join(sublime.packages_path(), "Sound", "sounds", event_name, str(randrange(1, num_files + 1))) + ".mp3"
         call(["afplay", file_path])
 
     def on_new_async(self, view):
@@ -73,4 +73,4 @@ class EventSound(sublime_plugin.EventListener):
         if not hasattr(self, "on_play_flag"): self.on_play_flag = False
         if self.on_play_flag: return
         self.on_play_flag = True
-        sublime.set_timeout(lambda: self.play("on_modify", random=True), 100)
+        sublime.set_timeout(lambda: self.play("on_modify"), 100)
