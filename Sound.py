@@ -3,6 +3,7 @@ from subprocess import call
 from os.path import join
 from random import randrange
 from threading import Thread
+from functools import wraps
 
 class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
@@ -68,6 +69,7 @@ class EventSound(sublime_plugin.EventListener):
         sublime.set_timeout(lambda: self.play("on_modify", random=True), 100)
 
 def thread(func):
+    @wraps(func)
     def wrapper(*args, **kwargs):
         Thread(target=lambda: func(*args, **kwargs)).start()
     return wrapper
