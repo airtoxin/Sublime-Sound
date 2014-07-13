@@ -25,7 +25,11 @@
 								},
 								"caption": "Settings – User"
 							},
-							{ "caption": "-" }
+							{"caption": "-"},
+							{
+								"command": "open_sounds_directory",
+								"caption": "Open sounds"
+							}
 						]
 					}
 				]

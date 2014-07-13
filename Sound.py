@@ -61,3 +61,13 @@ class EventSound(sublime_plugin.EventListener):
         if self.on_play_flag: return
         self.on_play_flag = True
         sublime.set_timeout(func, time)
+
+
+class OpenSoundsDirectoryCommand(sublime_plugin.TextCommand):
+    def run(self, edit):
+        if sublime.platform() == "osx":
+            call(["open", join(sublime.packages_path(), "Sound", "sounds")])
+        elif sublime.platform() == "linux":
+            pass  # TODO
+        elif sublime.platform() == "windows":
+            pass  # TODO
