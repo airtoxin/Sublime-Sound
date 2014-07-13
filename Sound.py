@@ -15,10 +15,8 @@ class EventSound(sublime_plugin.EventListener):
         elif sublime.platform() == "windows":
             pass  # TODO
 
+    @thread
     def osx_play(self, event_name, random=False):
-        threading.Thread(target=lambda: self._osx_play(event_name, random=random)).start()
-
-    def _osx_play(self, event_name, random=False):
         self.on_play_flag = False
         if not random:
             file_path = join(sublime.packages_path(), "Sublime-Sound", "sounds", event_name) + ".mp3"
@@ -68,3 +66,8 @@ class EventSound(sublime_plugin.EventListener):
         if self.on_play_flag: return
         self.on_play_flag = True
         sublime.set_timeout(lambda: self.play("on_modify", random=True), 100)
+
+def thread(func):
+    def wrapper(*args, **kwargs):
+        threading.Thread(target=lambda: func(*args, **kwargs)).start()
+    return wrapper
