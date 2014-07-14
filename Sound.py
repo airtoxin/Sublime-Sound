@@ -84,4 +84,4 @@ class OpenSoundsDirectoryCommand(sublime_plugin.TextCommand):
         elif sublime.platform() == "linux":
             pass  # TODO
         elif sublime.platform() == "windows":
-            pass  # TODO
+            call(["explorer", join(sublime.packages_path(), "Sound", "sounds")])
