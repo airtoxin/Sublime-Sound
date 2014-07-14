@@ -26,7 +26,7 @@ class EventSound(sublime_plugin.EventListener):
         elif sublime.platform() == "linux":
             pass  # TODO
         elif sublime.platform() == "windows":
-            pass  # TODO
+            self.play = self.win_play
 
     @thread
     def osx_play(self, event_name):
@@ -36,6 +36,15 @@ class EventSound(sublime_plugin.EventListener):
         num_files = events[event_name]["num_files"]
         file_path = join(sublime.packages_path(), "Sound", "sounds", event_name, str(randrange(1, num_files + 1))) + ".mp3"
         call(["afplay", file_path])
+
+    @thread
+    def win_play(self, event_name):
+        events = sublime.load_settings("Sound.sublime-settings").get("events")
+        if not event_name in events: return
+        self.on_play_flag = False
+        num_files = events[event_name]["num_files"]
+        file_path = join(sublime.packages_path(), "Sound", "sounds", event_name, str(randrange(1, num_files + 1))) + ".wav"
+        winsound.PlaySound(file_path, winsound.SND_FILENAME)
 
     def on_new_async(self, view):
         # Called when a new buffer is created. Runs in a separate thread, and does not block the application.
