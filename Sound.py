@@ -34,7 +34,7 @@ class EventSound(sublime_plugin.EventListener):
         if not event_name in events: return
         self.on_play_flag = False
         num_files = events[event_name]["num_files"]
-        file_path = join(sublime.packages_path(), "Sound", "sounds", event_name, str(randrange(1, num_files + 1))) + ".mp3"
+        file_path = join(sublime.packages_path(), "Sound", "sounds", event_name, str(randrange(1, num_files + 1))) + ".wav"
         call(["afplay", file_path])
 
     @thread
