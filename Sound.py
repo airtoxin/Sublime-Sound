@@ -44,7 +44,7 @@ class EventSound(sublime_plugin.EventListener):
         self.on_play_flag = False
         num_files = events[event_name]["num_files"]
         file_path = join(sublime.packages_path(), "Sound", "sounds", event_name, str(randrange(1, num_files + 1))) + ".wav"
-        winsound.PlaySound(file_path, winsound.SND_FILENAME)
+        winsound.PlaySound(file_path, winsound.SND_FILENAME | winsound.SND_ASYNC)
 
     def on_new_async(self, view):
         # Called when a new buffer is created. Runs in a separate thread, and does not block the application.
