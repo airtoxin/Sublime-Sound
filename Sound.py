@@ -4,6 +4,11 @@ from os.path import join, normpath, dirname, abspath
 import sys
 from random import randrange
 
+try:
+    import winsound
+except ImportError:
+    pass
+
 __file__ = normpath(abspath(__file__))
 __path__ = dirname(__file__)
 libs_path = join(__path__, 'libs')
