@@ -8,8 +8,8 @@ __Supported Platforms__
 
 ||osx|linux|windows|
 |:----:|:----:|:----:|:----:|
-|Sublime Text 2|:o:|:x:|:x:|
-|Sublime Text 3|:o:|:x:|:x:|
+|Sublime Text 2|:o:|:x:|:o:|
+|Sublime Text 3|:o:|:x:|:o:|
 
 ##Installation
 
