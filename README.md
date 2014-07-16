@@ -28,7 +28,7 @@ __Package Control: Install Package__ > Select __Sound__
 
 ##Custom Sounds
 
-You can customize playing sounds by replace file. (only supports mp3 file now)
+You can customize playing sounds by replace file. (only supports wav file now)
 
 Replace mp3 on __Preference > Package Settings > Sound > Open sounds > event_name__ directory.
 
