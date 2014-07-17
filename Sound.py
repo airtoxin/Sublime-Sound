@@ -71,6 +71,7 @@ class EventSound(sublime_plugin.EventListener):
         self.throttle(lambda: self.play("on_modify"), 100)
 
     def throttle(self, func, time):
+        # Creates a function that, when executed, will only call the func function at most once per every time milliseconds.
         if not hasattr(self, "on_play_flag"): self.on_play_flag = False
         if self.on_play_flag: return
         self.on_play_flag = True
