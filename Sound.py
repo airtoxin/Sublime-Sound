@@ -1,8 +1,9 @@
 import sublime, sublime_plugin
 from subprocess import call
-from os.path import join, normpath, dirname, abspath
+from os import listdir
+from os.path import join, normpath, dirname, abspath, exists, splitext
 import sys
-from random import randrange
+from random import choice
 
 try:
     import winsound
@@ -17,6 +18,8 @@ if libs_path not in sys.path:
 
 from decorators import thread
 
+sounds_path = join(sublime.packages_path(), "Sound", "sounds")
+
 class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
         super(EventSound, self).__init__(*args, **kwargs)
@@ -30,21 +33,21 @@ class EventSound(sublime_plugin.EventListener):
 
     @thread
     def osx_play(self, event_name):
-        events = sublime.load_settings("Sound.sublime-settings").get("events")
-        if not event_name in events: return
         self.on_play_flag = False
-        num_files = events[event_name]["num_files"]
-        file_path = join(sublime.packages_path(), "Sound", "sounds", event_name, str(randrange(1, num_files + 1))) + ".wav"
-        call(["afplay", file_path])
+        dir_path = join(sounds_path, event_name)
+        if exists(dir_path):
+            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
+            if not len(sound_files) == 0:
+                call(["afplay", join(dir_path, choice(sound_files))])
 
     @thread
     def win_play(self, event_name):
-        events = sublime.load_settings("Sound.sublime-settings").get("events")
-        if not event_name in events: return
         self.on_play_flag = False
-        num_files = events[event_name]["num_files"]
-        file_path = join(sublime.packages_path(), "Sound", "sounds", event_name, str(randrange(1, num_files + 1))) + ".wav"
-        winsound.PlaySound(file_path, winsound.SND_FILENAME | winsound.SND_ASYNC)
+        dir_path = join(sounds_path, event_name)
+        if exists(dir_path):
+            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
+            if not len(sound_files) == 0:
+                winsound.PlaySound(join(dir_path, choice(sound_files)), winsound.SND_FILENAME | winsound.SND_ASYNC)
 
     def on_new_async(self, view):
         # Called when a new buffer is created. Runs in a separate thread, and does not block the application.
@@ -81,8 +84,8 @@ class EventSound(sublime_plugin.EventListener):
 class OpenSoundsDirectoryCommand(sublime_plugin.TextCommand):
     def run(self, edit):
         if sublime.platform() == "osx":
-            call(["open", join(sublime.packages_path(), "Sound", "sounds")])
+            call(["open", sounds_path])
         elif sublime.platform() == "linux":
             pass  # TODO
         elif sublime.platform() == "windows":
-            call(["explorer", join(sublime.packages_path(), "Sound", "sounds")])
+            call(["explorer", sounds_path])

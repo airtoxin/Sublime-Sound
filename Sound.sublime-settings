@@ -1,22 +1,2 @@
 {
-    "events": {
-        "on_new": {
-            "num_files": 1
-        },
-        "on_clone": {
-            "num_files": 1
-        },
-        "on_load": {
-            "num_files": 1
-        },
-        "on_save": {
-            "num_files": 1
-        },
-        "on_close": {
-            "num_files": 1
-        },
-        "on_modify": {
-            "num_files": 8
-        }
-    }
 }
