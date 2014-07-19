@@ -89,9 +89,10 @@ class EventSound(sublime_plugin.EventListener):
 
 class OpenSoundsDirectoryCommand(sublime_plugin.TextCommand):
     def run(self, edit):
+        sounds_path = join(sublime.packages_path(), "Sound", "sounds")
         if sublime.platform() == "osx":
-            call(["open", join(sublime.packages_path(), "Sound", "sounds")])
+            call(["open", sounds_path])
         elif sublime.platform() == "linux":
-            pass  # TODO
+            call(["xdg-open", sounds_path])
         elif sublime.platform() == "windows":
-            call(["explorer", join(sublime.packages_path(), "Sound", "sounds")])
+            call(["explorer", sounds_path])
