@@ -30,12 +30,6 @@ __Package Control: Install Package__ > Select __Sound__
 
 You can customize playing sounds by replace file. (only supports wav file now)
 
-Replace mp3 on __Preference > Package Settings > Sound > Open sounds > event_name__ directory.
+Replace wav file on __Preference > Package Settings > Sound > Open sounds > event_name__ directory.
 
-###Random playing sounds
-
-By default, 8 defferent sounds played in each key types(on modify event). In this way, you can also be assigned to the event multiple sounds.
-
-1. Put your sound files on event name directory
-2. Rename these files sequentially
-3. Edit num_files property in _settings - User_
+If you put some files in a event_name directory, this plugin randomly choice a file and play on each event triggered.
