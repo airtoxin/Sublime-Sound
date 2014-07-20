@@ -51,12 +51,12 @@ class EventSound(sublime_plugin.EventListener):
 
     @thread
     def linux_play(self, event_name):
-        events = sublime.load_settings("Sound.sublime-settings").get("events")
-        if not event_name in events: return
         self.on_play_flag = False
-        num_files = events[event_name]["num_files"]
-        file_path = join(sublime.packages_path(), "Sound", "sounds", event_name, str(randrange(1, num_files + 1))) + ".wav"
-        call(["aplay", file_path])
+        dir_path = join(sounds_path, event_name)
+        if exists(dir_path):
+            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
+            if not len(sound_files) == 0:
+                call(["aplay", join(dir_path, choice(sound_files))])
 
     def on_new_async(self, view):
         # Called when a new buffer is created. Runs in a separate thread, and does not block the application.
