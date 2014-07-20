@@ -27,7 +27,7 @@ class EventSound(sublime_plugin.EventListener):
         if sublime.platform() == "osx":
             self.play = self.osx_play
         elif sublime.platform() == "linux":
-            pass  # TODO
+            self.play = self.linux_play
         elif sublime.platform() == "windows":
             self.play = self.win_play
 
@@ -48,6 +48,15 @@ class EventSound(sublime_plugin.EventListener):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
                 winsound.PlaySound(join(dir_path, choice(sound_files)), winsound.SND_FILENAME | winsound.SND_ASYNC)
+
+    @thread
+    def linux_play(self, event_name):
+        events = sublime.load_settings("Sound.sublime-settings").get("events")
+        if not event_name in events: return
+        self.on_play_flag = False
+        num_files = events[event_name]["num_files"]
+        file_path = join(sublime.packages_path(), "Sound", "sounds", event_name, str(randrange(1, num_files + 1))) + ".wav"
+        call(["aplay", file_path])
 
     def on_new_async(self, view):
         # Called when a new buffer is created. Runs in a separate thread, and does not block the application.
@@ -83,9 +92,10 @@ class EventSound(sublime_plugin.EventListener):
 
 class OpenSoundsDirectoryCommand(sublime_plugin.TextCommand):
     def run(self, edit):
+        sounds_path = join(sublime.packages_path(), "Sound", "sounds")
         if sublime.platform() == "osx":
             call(["open", sounds_path])
         elif sublime.platform() == "linux":
-            pass  # TODO
+            call(["xdg-open", sounds_path])
         elif sublime.platform() == "windows":
             call(["explorer", sounds_path])
