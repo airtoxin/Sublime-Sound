@@ -12,21 +12,6 @@
 						"children":
 						[
 							{
-								"command": "open_file", "args":
-								{
-									"file": "${packages}/Sound/Sound.sublime-settings"
-								},
-								"caption": "Settings – Default"
-							},
-							{
-								"command": "open_file", "args":
-								{
-									"file": "${packages}/User/Sound.sublime-settings"
-								},
-								"caption": "Settings – User"
-							},
-							{"caption": "-"},
-							{
 								"command": "open_sounds_directory",
 								"caption": "Replace sounds"
 							}
