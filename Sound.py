@@ -36,7 +36,8 @@ class EventSound(sublime_plugin.EventListener):
         if exists(dir_path):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
-                call(["afplay", join(dir_path, choice(sound_files))])
+                volume = self.get_volume()
+                call(["afplay", "-v", str(volume / 100), join(dir_path, choice(sound_files))])
 
     @thread
     def win_play(self, event_name):
@@ -86,6 +87,14 @@ class EventSound(sublime_plugin.EventListener):
         if self.on_play_flag: return
         self.on_play_flag = True
         sublime.set_timeout(func, time)
+
+    def get_volume(self):
+        volume = sublime.load_settings("Sound.sublime-settings").get("volume")
+        if volume == None or volume < 0:
+            volume = 0
+        elif volume > 100:
+            volume = 100
+        return volume
 
 
 class OpenSoundsDirectoryCommand(sublime_plugin.TextCommand):
