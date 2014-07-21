@@ -18,8 +18,6 @@ if libs_path not in sys.path:
 
 from decorators import thread
 
-sounds_path = join(sublime.packages_path(), "Sound", "sounds")
-
 class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
         super(EventSound, self).__init__(*args, **kwargs)
@@ -34,7 +32,7 @@ class EventSound(sublime_plugin.EventListener):
     @thread
     def osx_play(self, event_name):
         self.on_play_flag = False
-        dir_path = join(sounds_path, event_name)
+        dir_path = join(sublime.packages_path(), "Sound", "sounds", event_name)
         if exists(dir_path):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
@@ -43,7 +41,7 @@ class EventSound(sublime_plugin.EventListener):
     @thread
     def win_play(self, event_name):
         self.on_play_flag = False
-        dir_path = join(sounds_path, event_name)
+        dir_path = join(sublime.packages_path(), "Sound", "sounds", event_name)
         if exists(dir_path):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
@@ -52,7 +50,7 @@ class EventSound(sublime_plugin.EventListener):
     @thread
     def linux_play(self, event_name):
         self.on_play_flag = False
-        dir_path = join(sounds_path, event_name)
+        dir_path = join(sublime.packages_path(), "Sound", "sounds", event_name)
         if exists(dir_path):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
