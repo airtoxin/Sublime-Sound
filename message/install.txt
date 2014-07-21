@@ -1,0 +1,26 @@
+=====Sublime-Sound=====
+Thank you for your installing.
+
+=====Supported Platforms=====
+We support all platforms 'osx', 'linux' and 'windows' on ST3,
+but ST2, 'osx' and 'linux' only.
+sorry.
+
+=====How to use=====
+Now, you are cording with sounds.
+Default, we plays sound when...
+
++ any key was pressed (modify)
++ new file was created
++ file was opened
++ file was saved
++ file was closed
++ file was duplicated (File menu > New view into File)
+
+=====Custom Sounds (Mute)=====
+You can customize all default sounds by replace files on
+Sublime Preferences > Package Settings > Sound > Replace sounds
+(only supports wav file).
+
+If you puts some files in directory, we play these files randomly (See on_modify directory),
+and when delete all files, we play none (mute).

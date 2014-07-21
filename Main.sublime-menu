@@ -28,7 +28,7 @@
 							{"caption": "-"},
 							{
 								"command": "open_sounds_directory",
-								"caption": "Open sounds"
+								"caption": "Replace sounds"
 							}
 						]
 					}
