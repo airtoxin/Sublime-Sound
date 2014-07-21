@@ -7,7 +7,7 @@ from random import choice
 
 try:
     import winsound
-except ImportError:
+except Exception:
     pass
 
 __file__ = normpath(abspath(__file__))
