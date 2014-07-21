@@ -35,3 +35,7 @@ You can customize playing sounds by replace file. (only supports wav file now)
 Replace wav file on __Preference > Package Settings > Sound > Open sounds > event_name__ directory.
 
 If you put some files in a event_name directory, this plugin randomly choice a file and play on each event triggered.
+
+##Settings
+
++ volume{1~100}: only osx support
