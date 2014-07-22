@@ -36,6 +36,8 @@ Replace wav file on __Preference > Package Settings > Sound > Open sounds > even
 
 If you put some files in a event_name directory, this plugin randomly choice a file and play on each event triggered.
 
+Check [Sublime-SoundSets](https://github.com/airtoxin/Sublime-SoundSets)
+
 ##Settings
 
 + volume{1~100}: only osx support
