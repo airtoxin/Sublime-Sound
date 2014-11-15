@@ -21,13 +21,7 @@ from decorators import thread
 class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
         super(EventSound, self).__init__(*args, **kwargs)
-
-        if sublime.platform() == "osx":
-            self.play = self.osx_play
-        elif sublime.platform() == "linux":
-            self.play = self.linux_play
-        elif sublime.platform() == "windows":
-            self.play = self.win_play
+        self.play = getattr(self, sublime.platform() + '_play')
 
     @thread
     def osx_play(self, event_name):
