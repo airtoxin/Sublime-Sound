@@ -1,8 +1,8 @@
 Thank you for your installing.
 
 =====Supported Platforms=====
-We support all platforms 'osx', 'linux' and 'windows' on ST3,
-but ST2, 'osx' and 'linux' only.
+We support all platforms 'osx', 'linux' and 'windows' on ST3.
+ST2, 'osx' and 'linux' only and ST2 version Build 2091(29 July 2011) or more newer are not supported.
 sorry.
 
 =====How to use=====

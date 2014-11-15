@@ -8,10 +8,10 @@ __Supported Platforms__
 
 ||osx|linux|windows|
 |:----:|:----:|:----:|:----:|
-|Sublime Text 2|:o:|:o:|:x:|
+|Sublime Text 2|:small_red_triangle:|:small_red_triangle:|:x:|
 |Sublime Text 3|:o:|:o:|:o:|
 
-ST2 haven't sound playing module on windows (winsound).
+If you use ST2 Build 2091(29 July 2011) or more newer one, we cannot play any sounds because of its change of threading policy.:cry:
 
 ##Installation
 
