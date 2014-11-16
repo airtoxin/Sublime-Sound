@@ -29,7 +29,6 @@ class EventSound(sublime_plugin.EventListener):
         self.on_play_flag = False
         dir_path = join(sublime.packages_path(), "Sound", "sounds", dirname)
         sound_files = self.filepaths.setdefault(dir_path, self._get_sound_files(dir_path))
-        print(self.filepaths)
         if not len(sound_files) == 0:
             volume = self.get_volume()
             call(["afplay", "-v", str(volume / 100), join(dir_path, choice(sound_files))])
