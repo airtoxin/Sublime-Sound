@@ -25,29 +25,28 @@ class EventSound(sublime_plugin.EventListener):
         self.filepaths = {}
 
     @thread
-    def osx_play(self, dirname):
+    def _play(self, dirname, func):
         self.on_play_flag = False
         dir_path = join(sublime.packages_path(), "Sound", "sounds", dirname)
         sound_files = self.filepaths.setdefault(dir_path, self._get_sound_files(dir_path))
         if not len(sound_files) == 0:
+            func(dir_path, sound_files)
+
+    def osx_play(self, dirname):
+        def func(dir_path, sound_files):
             volume = self.get_volume()
             call(["afplay", "-v", str(volume / 100), join(dir_path, choice(sound_files))])
+        self._play(dirname, func)
 
-    @thread
     def win_play(self, dirname):
-        self.on_play_flag = False
-        dir_path = join(sublime.packages_path(), "Sound", "sounds", dirname)
-        sound_files = self.filepaths.setdefault(dir_path, self._get_sound_files(dir_path))
-        if not len(sound_files) == 0:
+        def func(dir_path, sound_files):
             winsound.PlaySound(join(dir_path, choice(sound_files)), winsound.SND_FILENAME | winsound.SND_ASYNC)
+        self._play(dirname, func)
 
-    @thread
     def linux_play(self, dirname):
-        self.on_play_flag = False
-        dir_path = join(sublime.packages_path(), "Sound", "sounds", dirname)
-        sound_files = self.filepaths.setdefault(dir_path, self._get_sound_files(dir_path))
-        if not len(sound_files) == 0:
+        def func(dir_path, sound_files):
             call(["aplay", join(dir_path, choice(sound_files))])
+        self._play(dirname, func)
 
     def _get_sound_files(self, dir_path):
         if exists(dir_path):
