@@ -22,44 +22,57 @@ class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
         super(EventSound, self).__init__(*args, **kwargs)
         self.play = getattr(self, sublime.platform() + '_play')
-        events = ["on_new", "on_clone", "on_load", "on_load", "on_pre_save", "on_modify"]
-        self.events = [event + "_async" if sublime.version() == "3" else event for event in events]
-        self.set_event_triggers()
-
-    def set_event_triggers(self):
-        # Create instance methods: self.on_new(self, view) or self.on_new_async(self, view) ...
-        for event in self.events:
-            def func(view):
-                self.throttle(lambda: self.play(event), 100)
-            setattr(self, event, func)
+        self.filepaths = {}
 
     @thread
-    def osx_play(self, event_name):
+    def osx_play(self, dirname):
         self.on_play_flag = False
-        dir_path = join(sublime.packages_path(), "Sound", "sounds", event_name)
-        if exists(dir_path):
-            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
-            if not len(sound_files) == 0:
-                volume = self.get_volume()
-                call(["afplay", "-v", str(volume / 100), join(dir_path, choice(sound_files))])
+        dir_path = join(sublime.packages_path(), "Sound", "sounds", dirname)
+        sound_files = self.filepaths.setdefault(dir_path, self._get_sound_files(dir_path))
+        print(self.filepaths)
+        if not len(sound_files) == 0:
+            volume = self.get_volume()
+            call(["afplay", "-v", str(volume / 100), join(dir_path, choice(sound_files))])
 
     @thread
-    def win_play(self, event_name):
+    def win_play(self, dirname):
         self.on_play_flag = False
-        dir_path = join(sublime.packages_path(), "Sound", "sounds", event_name)
-        if exists(dir_path):
-            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
-            if not len(sound_files) == 0:
-                winsound.PlaySound(join(dir_path, choice(sound_files)), winsound.SND_FILENAME | winsound.SND_ASYNC)
+        dir_path = join(sublime.packages_path(), "Sound", "sounds", dirname)
+        sound_files = self.filepaths.setdefault(dir_path, self._get_sound_files(dir_path))
+        if not len(sound_files) == 0:
+            winsound.PlaySound(join(dir_path, choice(sound_files)), winsound.SND_FILENAME | winsound.SND_ASYNC)
 
     @thread
-    def linux_play(self, event_name):
+    def linux_play(self, dirname):
         self.on_play_flag = False
-        dir_path = join(sublime.packages_path(), "Sound", "sounds", event_name)
+        dir_path = join(sublime.packages_path(), "Sound", "sounds", dirname)
+        sound_files = self.filepaths.setdefault(dir_path, self._get_sound_files(dir_path))
+        if not len(sound_files) == 0:
+            call(["aplay", join(dir_path, choice(sound_files))])
+
+    def _get_sound_files(self, dir_path):
         if exists(dir_path):
-            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
-            if not len(sound_files) == 0:
-                call(["aplay", join(dir_path, choice(sound_files))])
+            return [f for f in listdir(dir_path) if f.endswith(".wav") ]
+        else:
+            return []
+
+    def on_new(self, view):
+        self.throttle(lambda: self.play("on_new"), 100)
+
+    def on_clone(self, view):
+        self.throttle(lambda: self.play("on_clone"), 100)
+
+    def on_load(self, view):
+        self.throttle(lambda: self.play("on_load"), 100)
+
+    def on_close(self, view):
+        self.throttle(lambda: self.play("on_close"), 100)
+
+    def on_pre_save(self, view):
+        self.throttle(lambda: self.play("on_save"), 100)
+
+    def on_modified(self, view):
+        self.throttle(lambda: self.play("on_modify"), 100)
 
     def throttle(self, func, time):
         # Creates a function that, when executed, will only call the func function at most once per every time milliseconds.
