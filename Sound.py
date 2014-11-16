@@ -22,6 +22,16 @@ class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
         super(EventSound, self).__init__(*args, **kwargs)
         self.play = getattr(self, sublime.platform() + '_play')
+        events = ["on_new", "on_clone", "on_load", "on_load", "on_pre_save", "on_modify"]
+        self.events = [event + "_async" if sublime.version() == "3" else event for event in events]
+        self.set_event_triggers()
+
+    def set_event_triggers(self):
+        # Create instance methods: self.on_new(self, view) or self.on_new_async(self, view) ...
+        for event in self.events:
+            def func(view):
+                self.throttle(lambda: self.play(event), 100)
+            setattr(self, event, func)
 
     @thread
     def osx_play(self, event_name):
@@ -50,30 +60,6 @@ class EventSound(sublime_plugin.EventListener):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
                 call(["aplay", join(dir_path, choice(sound_files))])
-
-    def on_new_async(self, view):
-        # Called when a new buffer is created. Runs in a separate thread, and does not block the application.
-        self.throttle(lambda: self.play("on_new"), 100)
-
-    def on_clone_async(self, view):
-        # Called when a view is cloned from an existing one. Runs in a separate thread, and does not block the application.
-        self.throttle(lambda: self.play("on_clone"), 100)
-
-    def on_load_async(self, view):
-        # Called when the file is finished loading. Runs in a separate thread, and does not block the application.
-        self.throttle(lambda: self.play("on_load"), 100)
-
-    def on_close(self, view):
-        # Called when a view is closed (note, there may still be other views into the same buffer).
-        self.throttle(lambda: self.play("on_close"), 100)
-
-    def on_pre_save_async(self, view):
-        # Called after a view has been saved. Runs in a separate thread, and does not block the application.
-        self.throttle(lambda: self.play("on_save"), 100)
-
-    def on_modified_async(self, view):
-        # Called after changes have been made to a view. Runs in a separate thread, and does not block the application.
-        self.throttle(lambda: self.play("on_modify"), 100)
 
     def throttle(self, func, time):
         # Creates a function that, when executed, will only call the func function at most once per every time milliseconds.
