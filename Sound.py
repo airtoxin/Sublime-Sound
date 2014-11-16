@@ -22,12 +22,15 @@ class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
         super(EventSound, self).__init__(*args, **kwargs)
         self.play = getattr(self, sublime.platform() + '_play')
+        # sublime.packages_path doesn't work here...
         self.filepaths = {}
 
+    # async play
     @thread
     def _play(self, dirname, func):
         self.on_play_flag = False
         dir_path = join(sublime.packages_path(), "Sound", "sounds", dirname)
+        # reduce file access
         sound_files = self.filepaths.setdefault(dir_path, self._get_sound_files(dir_path))
         if not len(sound_files) == 0:
             func(dir_path, sound_files)
@@ -76,6 +79,7 @@ class EventSound(sublime_plugin.EventListener):
         # Creates a function that, when executed, will only call the func function at most once per every time milliseconds.
         if not hasattr(self, "on_play_flag"): self.on_play_flag = False
         if self.on_play_flag: return
+        # this flag falsed when sounding complete
         self.on_play_flag = True
         sublime.set_timeout(func, time)
 
