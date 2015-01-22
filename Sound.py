@@ -34,7 +34,7 @@ class EventSound(sublime_plugin.EventListener):
                 call(["afplay", "-v", str(volume / 100), join(dir_path, choice(sound_files))])
 
     @thread
-    def win_play(self, event_name):
+    def windows_play(self, event_name):
         self.on_play_flag = False
         dir_path = join(sublime.packages_path(), "Sound", "sounds", event_name)
         if exists(dir_path):
