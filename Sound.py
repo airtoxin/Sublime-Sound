@@ -1,8 +1,7 @@
 import sublime, sublime_plugin
 from subprocess import call
 from os import listdir
-from os.path import join, normpath, dirname, abspath, exists, splitext
-import sys
+from os.path import join, exists
 from random import choice
 
 try:
@@ -10,13 +9,7 @@ try:
 except Exception:
     pass
 
-__file__ = normpath(abspath(__file__))
-__path__ = dirname(__file__)
-libs_path = join(__path__, 'libs')
-if libs_path not in sys.path:
-    sys.path.insert(0, libs_path)
-
-from decorators import thread
+from .libs.decorators import thread
 
 class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
