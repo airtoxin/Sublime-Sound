@@ -1,4 +1,4 @@
-Sublime-Sound ![ST2](https://img.shields.io/badge/Sublime%20Text-build 2091-orange.svg) ![ST3](https://img.shields.io/badge/Sublime%20Text-build 3065-blue.svg)
+Sublime-Sound ![ST2](https://img.shields.io/badge/Sublime%20Text-build 2091-orange.svg) ![ST3](https://img.shields.io/badge/Sublime%20Text-build 3083-blue.svg)
 =============
 
 Sublime-Text plugin to play event sounds.
