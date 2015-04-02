@@ -95,8 +95,4 @@ class EventSound(sublime_plugin.EventListener):
 
     def get_volume(self):
         volume = sublime.load_settings("Sound.sublime-settings").get("volume")
-        if volume == None or volume < 0:
-            volume = 0
-        elif volume > 100:
-            volume = 100
-        return volume
+        return min(100, max(0, volume))
