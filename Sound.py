@@ -46,27 +46,45 @@ class EventSound(sublime_plugin.EventListener):
 
     def on_new_async(self, view):
         # Called when a new buffer is created. Runs in a separate thread, and does not block the application.
-        self.throttle(lambda: self.play("on_new"), 50)
+        self.throttle(
+            lambda: self.play("on_new"),
+            sublime.load_settings("Sound.sublime-settings").get("min_span")
+        )
 
     def on_clone_async(self, view):
         # Called when a view is cloned from an existing one. Runs in a separate thread, and does not block the application.
-        self.throttle(lambda: self.play("on_clone"), 50)
+        self.throttle(
+            lambda: self.play("on_clone"),
+            sublime.load_settings("Sound.sublime-settings").get("min_span")
+        )
 
     def on_load_async(self, view):
         # Called when the file is finished loading. Runs in a separate thread, and does not block the application.
-        self.throttle(lambda: self.play("on_load"), 50)
+        self.throttle(
+            lambda: self.play("on_load"),
+            sublime.load_settings("Sound.sublime-settings").get("min_span")
+        )
 
     def on_close(self, view):
         # Called when a view is closed (note, there may still be other views into the same buffer).
-        self.throttle(lambda: self.play("on_close"), 50)
+        self.throttle(
+            lambda: self.play("on_close"),
+            sublime.load_settings("Sound.sublime-settings").get("min_span")
+        )
 
     def on_pre_save_async(self, view):
         # Called after a view has been saved. Runs in a separate thread, and does not block the application.
-        self.throttle(lambda: self.play("on_save"), 50)
+        self.throttle(
+            lambda: self.play("on_save"),
+            sublime.load_settings("Sound.sublime-settings").get("min_span")
+        )
 
     def on_modified_async(self, view):
         # Called after changes have been made to a view. Runs in a separate thread, and does not block the application.
-        self.throttle(lambda: self.play("on_modify"), 50)
+        self.throttle(
+            lambda: self.play("on_modify"),
+            sublime.load_settings("Sound.sublime-settings").get("min_span")
+        )
 
     def throttle(self, func, time):
         # Creates a function that, when executed, will only call the func function at most once per every time milliseconds.
