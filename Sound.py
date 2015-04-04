@@ -19,7 +19,13 @@ class EventSound(sublime_plugin.EventListener):
     @thread
     def osx_play(self, event_name):
         self.on_play_flag = False
-        dir_path = join(sublime.packages_path(), "Sound", "sounds", event_name)
+        dir_path = join(
+            sublime.packages_path(),
+            "Sound",
+            "sounds",
+            sublime.load_settings("Sound.sublime-settings").get("soundset"),
+            event_name
+        )
         if exists(dir_path):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
