@@ -12,6 +12,7 @@ except Exception:
 
 from .libs.decorators import thread
 
+SETTING_NAME = "Sound.sublime-settings"
 BASE_SOUNDSET_URL = "https://github.com/airtoxin/Sublime-SoundSets/blob/master/{0}.tar.gz?raw=true"
 
 class EventSound(sublime_plugin.EventListener):
@@ -26,7 +27,7 @@ class EventSound(sublime_plugin.EventListener):
             sublime.packages_path(),
             "Sound",
             "sounds",
-            sublime.load_settings("Sound.sublime-settings").get("soundset"),
+            sublime.load_settings(SETTING_NAME).get("soundset"),
             event_name
         )
         if exists(dir_path):
@@ -57,42 +58,42 @@ class EventSound(sublime_plugin.EventListener):
         # Called when a new buffer is created. Runs in a separate thread, and does not block the application.
         self.throttle(
             lambda: self.play("on_new"),
-            sublime.load_settings("Sound.sublime-settings").get("min_span")
+            sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
     def on_clone_async(self, view):
         # Called when a view is cloned from an existing one. Runs in a separate thread, and does not block the application.
         self.throttle(
             lambda: self.play("on_clone"),
-            sublime.load_settings("Sound.sublime-settings").get("min_span")
+            sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
     def on_load_async(self, view):
         # Called when the file is finished loading. Runs in a separate thread, and does not block the application.
         self.throttle(
             lambda: self.play("on_load"),
-            sublime.load_settings("Sound.sublime-settings").get("min_span")
+            sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
     def on_close(self, view):
         # Called when a view is closed (note, there may still be other views into the same buffer).
         self.throttle(
             lambda: self.play("on_close"),
-            sublime.load_settings("Sound.sublime-settings").get("min_span")
+            sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
     def on_pre_save_async(self, view):
         # Called after a view has been saved. Runs in a separate thread, and does not block the application.
         self.throttle(
             lambda: self.play("on_save"),
-            sublime.load_settings("Sound.sublime-settings").get("min_span")
+            sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
     def on_modified_async(self, view):
         # Called after changes have been made to a view. Runs in a separate thread, and does not block the application.
         self.throttle(
             lambda: self.play("on_modify"),
-            sublime.load_settings("Sound.sublime-settings").get("min_span")
+            sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
     def throttle(self, func, time):
@@ -103,7 +104,7 @@ class EventSound(sublime_plugin.EventListener):
         sublime.set_timeout(func, time)
 
     def get_volume(self):
-        volume = sublime.load_settings("Sound.sublime-settings").get("volume")
+        volume = sublime.load_settings(SETTING_NAME).get("volume")
         return min(100, max(0, volume))
 
 class InstallSoundsetCommand(sublime_plugin.ApplicationCommand):
@@ -140,3 +141,19 @@ class InstallSoundsetCommand(sublime_plugin.ApplicationCommand):
             on_change,
             on_cancel
         )
+
+class ChangeSoundsetCommand(sublime_plugin.ApplicationCommand):
+    def run(self):
+        soundsets = [s for s in os.listdir(join(sublime.packages_path(), "Sound", "sounds")) if not s.startswith(".")]
+        def on_done(i):
+            self.change_setting(soundsets[i])
+
+        sublime.active_window().show_quick_panel(
+            soundsets,
+            on_done
+        )
+
+    def change_setting(self, soundset_name):
+        print(soundset_name)
+        sublime.load_settings(SETTING_NAME).set("soundset", soundset_name)
+        sublime.save_settings(SETTING_NAME)

@@ -1,3 +1,4 @@
 [
-	{ "caption": "Sound: Install soundset", "command": "install_soundset" }
+	{ "caption": "Sound: Install soundset", "command": "install_soundset" },
+	{ "caption": "Sound: Change soundset", "command": "change_soundset" }
 ]
