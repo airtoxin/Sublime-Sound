@@ -1,4 +1,5 @@
 import sublime, sublime_plugin
+import urllib, tarfile, os
 from subprocess import call
 from os import listdir
 from os.path import join, exists
@@ -11,10 +12,12 @@ except Exception:
 
 from .libs.decorators import thread
 
+BASE_SOUNDSET_URL = "https://github.com/airtoxin/Sublime-SoundSets/blob/master/{0}.tar.gz?raw=true"
+
 class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
         super(EventSound, self).__init__(*args, **kwargs)
-        self.play = getattr(self, sublime.platform() + '_play')
+        self.play = getattr(self, sublime.platform() + "_play")
 
     @thread
     def osx_play(self, event_name):
@@ -102,3 +105,38 @@ class EventSound(sublime_plugin.EventListener):
     def get_volume(self):
         volume = sublime.load_settings("Sound.sublime-settings").get("volume")
         return min(100, max(0, volume))
+
+class InstallSoundsetCommand(sublime_plugin.ApplicationCommand):
+    def run(self):
+        def on_done(name):
+            extract_name = join(sublime.packages_path(), "Sound", "sounds")
+            tarfile_name = join(extract_name, name + ".tar.gz")
+            status_key = "SOUND"
+            try:
+                urllib.request.urlretrieve(
+                   BASE_SOUNDSET_URL.format(name),
+                   tarfile_name
+                )
+                tarfile.open(tarfile_name, "r").extractall(extract_name)
+                os.remove(tarfile_name)
+            except:
+                sublime.active_window().active_view().set_status(
+                    status_key,
+                    "Soundset Install Failed: " + name
+                )
+                sublime.set_timeout(
+                    lambda: sublime.active_window().active_view().erase_status(status_key),
+                    3000
+                )
+        def on_change(change):
+            pass
+        def on_cancel():
+            pass
+
+        sublime.active_window().show_input_panel(
+            "Input soundset_name",
+            "",
+            on_done,
+            on_change,
+            on_cancel
+        )
