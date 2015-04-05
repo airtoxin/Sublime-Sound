@@ -16,10 +16,16 @@ Default, we plays sound when...
 + file was closed
 + file was duplicated (File menu > New view into File)
 
-=====Custom Sounds (Mute)=====
-You can customize all default sounds by replace files on
-Sublime Preferences > Package Settings > Sound > Replace sounds
-(only supports wav file).
+=====Command List=====
+These commands can select from Command Palette.
 
-If you puts some files in directory, we play these files randomly (See on_modify directory),
-and when delete all files, we play none (mute).
++ Toggle sound:       Play/Mute sound
++ Change soundset:    Change active soundset
++ Install soundset:   Install new soundsets (Check https://github.com/airtoxin/Sublime-SoundSets)
++ Uninstall soundset: Remove installed soundsets
++ Add soundset:       Add custom sounds manualy
+
+=====Custom Sounds=====
+You can customize playing sounds by replace file. (only supports wav file now)
+Replace wav file on Preference > Package Settings > Sound > Open sounds > soundset name > event_name directory.
+If you put some files in a event_name directory, this plugin randomly choice a file and play on each event triggered.
