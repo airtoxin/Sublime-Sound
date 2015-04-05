@@ -120,41 +120,6 @@ class EventSound(sublime_plugin.EventListener):
         volume = sublime.load_settings(SETTING_NAME).get("volume")
         return min(100, max(0, volume))
 
-class InstallSoundsetCommand(sublime_plugin.ApplicationCommand):
-    def run(self):
-        def on_done(name):
-            extract_name = join(sublime.packages_path(), "Sound", "sounds")
-            tarfile_name = join(extract_name, name + ".tar.gz")
-            status_key = "SOUND"
-            try:
-                urllib.request.urlretrieve(
-                   BASE_SOUNDSET_URL.format(name),
-                   tarfile_name
-                )
-                tarfile.open(tarfile_name, "r").extractall(extract_name)
-                os.remove(tarfile_name)
-            except:
-                sublime.active_window().active_view().set_status(
-                    status_key,
-                    "Soundset Install Failed: " + name
-                )
-                sublime.set_timeout(
-                    lambda: sublime.active_window().active_view().erase_status(status_key),
-                    3000
-                )
-        def on_change(change):
-            pass
-        def on_cancel():
-            pass
-
-        sublime.active_window().show_input_panel(
-            "Input soundset_name",
-            "",
-            on_done,
-            on_change,
-            on_cancel
-        )
-
 
 class ChangeSoundsetCommand(sublime_plugin.ApplicationCommand):
     def run(self):
@@ -178,3 +143,41 @@ class ToggleSoundCommand(sublime_plugin.ApplicationCommand):
         current_volume = sublime.load_settings(SETTING_NAME).get("volume")
         sublime.load_settings(SETTING_NAME).set("volume", -current_volume)
         sublime.save_settings(SETTING_NAME)
+
+
+class InstallSoundsetCommand(sublime_plugin.ApplicationCommand):
+    def run(self):
+        available = self.get_remote_soundsets()
+        installed = self.get_installed_soundsets()
+        diff = [a for a in available if not a["name"] in installed]
+
+        def on_done(index):
+            if index == -1: return
+            selected = diff[index]
+            self.install(selected)
+
+        sublime.active_window().show_quick_panel(
+            [d["name"] for d in diff],
+            on_done
+        )
+
+    def get_remote_soundsets(self):
+        return json.loads(urllib.request.urlopen(PACKLIST_URL).read().decode("utf-8"))
+
+    def get_installed_soundsets(self):
+        return [d for d in listdir(SOUNDS_DIR_PATH) if not d.startswith(".")]
+
+    def install(self, detail):
+        soundset_url = detail["url"]
+        tarfile_name = join(SOUNDS_DIR_PATH, detail["name"] + ".tar.gz")
+
+        try:
+            urllib.request.urlretrieve(
+               soundset_url,
+               tarfile_name
+            )
+            tarfile.open(tarfile_name, "r").extractall(SOUNDS_DIR_PATH)
+            os.remove(tarfile_name)
+            show_status("Install succeeded!")
+        except:
+            show_status("Install failed...")
