@@ -1,5 +1,5 @@
 import sublime, sublime_plugin
-import urllib, tarfile, os, json
+import urllib, tarfile, os, json, shutil
 from subprocess import call
 from os import listdir
 from os.path import join, exists
@@ -178,3 +178,24 @@ class InstallSoundsetCommand(sublime_plugin.ApplicationCommand):
             show_status("Install succeeded!")
         except:
             show_status("Install failed...")
+
+
+class UninstallSoundsetCommand(sublime_plugin.ApplicationCommand):
+    def run(self):
+        installed = [d for d in listdir(SOUNDS_DIR_PATH) if not d.startswith(".")]
+        def on_done(index):
+            if index == -1: return
+            self._remove(join(SOUNDS_DIR_PATH, installed[index]))
+
+        sublime.active_window().show_quick_panel(
+            installed,
+            on_done
+        )
+
+    def _remove(self, path):
+        try:
+            print(path)
+            shutil.rmtree(path)
+            show_status("Uninstall succeeded!")
+        except:
+            show_status("Uninstall failed...")
