@@ -14,7 +14,6 @@ from .libs.decorators import thread
 
 STATUS_KEY = "SUBLIMESOUND"
 SETTING_NAME = "Sound.sublime-settings"
-BASE_SOUNDSET_URL = "https://github.com/airtoxin/Sublime-SoundSets/blob/master/{0}.tar.gz?raw=true"
 PACKLIST_URL = "https://raw.githubusercontent.com/airtoxin/Sublime-SoundSets/master/packlist.json"
 SOUNDS_DIR_PATH = join(sublime.packages_path(), "Sound", "sounds")
 
@@ -37,9 +36,7 @@ class EventSound(sublime_plugin.EventListener):
     def osx_play(self, event_name):
         self.on_play_flag = False
         dir_path = join(
-            sublime.packages_path(),
-            "Sound",
-            "sounds",
+            SOUNDS_DIR_PATH,
             sublime.load_settings(SETTING_NAME).get("soundset"),
             event_name
         )
@@ -52,7 +49,7 @@ class EventSound(sublime_plugin.EventListener):
     @thread
     def windows_play(self, event_name):
         self.on_play_flag = False
-        dir_path = join(sublime.packages_path(), "Sound", "sounds", event_name)
+        dir_path = join(SOUNDS_DIR_PATH, event_name)
         if exists(dir_path):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
@@ -61,7 +58,7 @@ class EventSound(sublime_plugin.EventListener):
     @thread
     def linux_play(self, event_name):
         self.on_play_flag = False
-        dir_path = join(sublime.packages_path(), "Sound", "sounds", event_name)
+        dir_path = join(SOUNDS_DIR_PATH, event_name)
         if exists(dir_path):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
@@ -123,7 +120,7 @@ class EventSound(sublime_plugin.EventListener):
 
 class ChangeSoundsetCommand(sublime_plugin.ApplicationCommand):
     def run(self):
-        soundsets = [s for s in os.listdir(join(sublime.packages_path(), "Sound", "sounds")) if not s.startswith(".")]
+        soundsets = [s for s in os.listdir(SOUNDS_DIR_PATH) if not s.startswith(".")]
         def on_done(i):
             if i == -1: return
             self.change_setting(soundsets[i])
