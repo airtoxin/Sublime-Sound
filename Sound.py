@@ -43,7 +43,7 @@ class EventSound(sublime_plugin.EventListener):
         if exists(dir_path):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
-                volume = self.get_volume()
+                volume = self._get_volume()
                 call(["afplay", "-v", str(volume / 100), join(dir_path, choice(sound_files))])
 
     @thread
@@ -66,54 +66,54 @@ class EventSound(sublime_plugin.EventListener):
 
     def on_new_async(self, view):
         # Called when a new buffer is created. Runs in a separate thread, and does not block the application.
-        self.throttle(
+        self._throttle(
             lambda: self.play("on_new"),
             sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
     def on_clone_async(self, view):
         # Called when a view is cloned from an existing one. Runs in a separate thread, and does not block the application.
-        self.throttle(
+        self._throttle(
             lambda: self.play("on_clone"),
             sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
     def on_load_async(self, view):
         # Called when the file is finished loading. Runs in a separate thread, and does not block the application.
-        self.throttle(
+        self._throttle(
             lambda: self.play("on_load"),
             sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
     def on_close(self, view):
         # Called when a view is closed (note, there may still be other views into the same buffer).
-        self.throttle(
+        self._throttle(
             lambda: self.play("on_close"),
             sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
     def on_pre_save_async(self, view):
         # Called after a view has been saved. Runs in a separate thread, and does not block the application.
-        self.throttle(
+        self._throttle(
             lambda: self.play("on_save"),
             sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
     def on_modified_async(self, view):
         # Called after changes have been made to a view. Runs in a separate thread, and does not block the application.
-        self.throttle(
+        self._throttle(
             lambda: self.play("on_modify"),
             sublime.load_settings(SETTING_NAME).get("min_span")
         )
 
-    def throttle(self, func, time):
+    def _throttle(self, func, time):
         # Creates a function that, when executed, will only call the func function at most once per every time milliseconds.
         if not hasattr(self, "on_play_flag"): self.on_play_flag = False
         if self.on_play_flag: return
         self.on_play_flag = True
         sublime.set_timeout(func, time)
 
-    def get_volume(self):
+    def _get_volume(self):
         volume = sublime.load_settings(SETTING_NAME).get("volume")
         return min(100, max(0, volume))
 
@@ -123,14 +123,14 @@ class ChangeSoundsetCommand(sublime_plugin.ApplicationCommand):
         soundsets = [s for s in os.listdir(SOUNDS_DIR_PATH) if not s.startswith(".")]
         def on_done(i):
             if i == -1: return
-            self.change_setting(soundsets[i])
+            self._change_setting(soundsets[i])
 
         sublime.active_window().show_quick_panel(
             soundsets,
             on_done
         )
 
-    def change_setting(self, soundset_name):
+    def _change_setting(self, soundset_name):
         sublime.load_settings(SETTING_NAME).set("soundset", soundset_name)
         sublime.save_settings(SETTING_NAME)
 
@@ -144,27 +144,27 @@ class ToggleSoundCommand(sublime_plugin.ApplicationCommand):
 
 class InstallSoundsetCommand(sublime_plugin.ApplicationCommand):
     def run(self):
-        available = self.get_remote_soundsets()
-        installed = self.get_installed_soundsets()
+        available = self._get_remote_soundsets()
+        installed = self._get_installed_soundsets()
         diff = [a for a in available if not a["name"] in installed]
 
         def on_done(index):
             if index == -1: return
             selected = diff[index]
-            self.install(selected)
+            self._install(selected)
 
         sublime.active_window().show_quick_panel(
             [d["name"] for d in diff],
             on_done
         )
 
-    def get_remote_soundsets(self):
+    def _get_remote_soundsets(self):
         return json.loads(urllib.request.urlopen(PACKLIST_URL).read().decode("utf-8"))
 
-    def get_installed_soundsets(self):
+    def _get_installed_soundsets(self):
         return [d for d in listdir(SOUNDS_DIR_PATH) if not d.startswith(".")]
 
-    def install(self, detail):
+    def _install(self, detail):
         soundset_url = detail["url"]
         tarfile_name = join(SOUNDS_DIR_PATH, detail["name"] + ".tar.gz")
 
