@@ -142,6 +142,7 @@ class InstallSoundsetCommand(sublime_plugin.ApplicationCommand):
             on_cancel
         )
 
+
 class ChangeSoundsetCommand(sublime_plugin.ApplicationCommand):
     def run(self):
         soundsets = [s for s in os.listdir(join(sublime.packages_path(), "Sound", "sounds")) if not s.startswith(".")]
@@ -156,4 +157,11 @@ class ChangeSoundsetCommand(sublime_plugin.ApplicationCommand):
     def change_setting(self, soundset_name):
         print(soundset_name)
         sublime.load_settings(SETTING_NAME).set("soundset", soundset_name)
+        sublime.save_settings(SETTING_NAME)
+
+
+class ToggleSoundCommand(sublime_plugin.ApplicationCommand):
+    def run(self):
+        current_volume = sublime.load_settings(SETTING_NAME).get("volume")
+        sublime.load_settings(SETTING_NAME).set("volume", -current_volume)
         sublime.save_settings(SETTING_NAME)
