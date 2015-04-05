@@ -147,6 +147,7 @@ class ChangeSoundsetCommand(sublime_plugin.ApplicationCommand):
     def run(self):
         soundsets = [s for s in os.listdir(join(sublime.packages_path(), "Sound", "sounds")) if not s.startswith(".")]
         def on_done(i):
+            if i == -1: return
             self.change_setting(soundsets[i])
 
         sublime.active_window().show_quick_panel(
@@ -155,7 +156,6 @@ class ChangeSoundsetCommand(sublime_plugin.ApplicationCommand):
         )
 
     def change_setting(self, soundset_name):
-        print(soundset_name)
         sublime.load_settings(SETTING_NAME).set("soundset", soundset_name)
         sublime.save_settings(SETTING_NAME)
 
