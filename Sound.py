@@ -1,5 +1,5 @@
 import sublime, sublime_plugin
-import urllib, tarfile, os
+import urllib, tarfile, os, json
 from subprocess import call
 from os import listdir
 from os.path import join, exists
@@ -12,8 +12,21 @@ except Exception:
 
 from .libs.decorators import thread
 
+STATUS_KEY = "SUBLIMESOUND"
 SETTING_NAME = "Sound.sublime-settings"
 BASE_SOUNDSET_URL = "https://github.com/airtoxin/Sublime-SoundSets/blob/master/{0}.tar.gz?raw=true"
+PACKLIST_URL = "https://raw.githubusercontent.com/airtoxin/Sublime-SoundSets/master/packlist.json"
+SOUNDS_DIR_PATH = join(sublime.packages_path(), "Sound", "sounds")
+
+def show_status(message):
+    sublime.active_window().active_view().set_status(
+        STATUS_KEY,
+        message
+    )
+    sublime.set_timeout(
+        lambda: sublime.active_window().active_view().erase_status(STATUS_KEY),
+        5000
+    )
 
 class EventSound(sublime_plugin.EventListener):
     def __init__(self, *args, **kwargs):
