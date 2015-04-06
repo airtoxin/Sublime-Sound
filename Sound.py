@@ -15,7 +15,7 @@ from .libs.decorators import thread
 STATUS_KEY = "SUBLIMESOUND"
 SETTING_NAME = "Sound.sublime-settings"
 PACKLIST_URL = "https://raw.githubusercontent.com/airtoxin/Sublime-SoundSets/master/packlist.json"
-SOUNDS_DIR_PATH = join(sublime.packages_path(), "Sound", "sounds")
+SOUNDS_DIR_PATH = lambda: join(sublime.packages_path(), "Sound", "sounds")
 
 def show_status(message):
     sublime.active_window().active_view().set_status(
@@ -36,7 +36,7 @@ class EventSound(sublime_plugin.EventListener):
     def osx_play(self, event_name):
         self.on_play_flag = False
         dir_path = join(
-            SOUNDS_DIR_PATH,
+            SOUNDS_DIR_PATH(),
             sublime.load_settings(SETTING_NAME).get("soundset"),
             event_name
         )
@@ -49,7 +49,7 @@ class EventSound(sublime_plugin.EventListener):
     @thread
     def windows_play(self, event_name):
         self.on_play_flag = False
-        dir_path = join(SOUNDS_DIR_PATH, event_name)
+        dir_path = join(SOUNDS_DIR_PATH(), event_name)
         if exists(dir_path):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
@@ -58,7 +58,7 @@ class EventSound(sublime_plugin.EventListener):
     @thread
     def linux_play(self, event_name):
         self.on_play_flag = False
-        dir_path = join(SOUNDS_DIR_PATH, event_name)
+        dir_path = join(SOUNDS_DIR_PATH(), event_name)
         if exists(dir_path):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
@@ -120,7 +120,7 @@ class EventSound(sublime_plugin.EventListener):
 
 class ChangeSoundsetCommand(sublime_plugin.ApplicationCommand):
     def run(self):
-        soundsets = [s for s in os.listdir(SOUNDS_DIR_PATH) if not s.startswith(".")]
+        soundsets = [s for s in os.listdir(SOUNDS_DIR_PATH()) if not s.startswith(".")]
         def on_done(i):
             if i == -1: return
             self._change_setting(soundsets[i])
@@ -162,18 +162,18 @@ class InstallSoundsetCommand(sublime_plugin.ApplicationCommand):
         return json.loads(urllib.request.urlopen(PACKLIST_URL).read().decode("utf-8"))
 
     def _get_installed_soundsets(self):
-        return [d for d in listdir(SOUNDS_DIR_PATH) if not d.startswith(".")]
+        return [d for d in listdir(SOUNDS_DIR_PATH()) if not d.startswith(".")]
 
     def _install(self, detail):
         soundset_url = detail["url"]
-        tarfile_name = join(SOUNDS_DIR_PATH, detail["name"] + ".tar.gz")
+        tarfile_name = join(SOUNDS_DIR_PATH(), detail["name"] + ".tar.gz")
 
         try:
             urllib.request.urlretrieve(
                soundset_url,
                tarfile_name
             )
-            tarfile.open(tarfile_name, "r").extractall(SOUNDS_DIR_PATH)
+            tarfile.open(tarfile_name, "r").extractall(SOUNDS_DIR_PATH())
             os.remove(tarfile_name)
             show_status("Install succeeded!")
         except:
@@ -182,10 +182,10 @@ class InstallSoundsetCommand(sublime_plugin.ApplicationCommand):
 
 class UninstallSoundsetCommand(sublime_plugin.ApplicationCommand):
     def run(self):
-        installed = [d for d in listdir(SOUNDS_DIR_PATH) if not d.startswith(".")]
+        installed = [d for d in listdir(SOUNDS_DIR_PATH()) if not d.startswith(".")]
         def on_done(index):
             if index == -1: return
-            self._remove(join(SOUNDS_DIR_PATH, installed[index]))
+            self._remove(join(SOUNDS_DIR_PATH(), installed[index]))
 
         sublime.active_window().show_quick_panel(
             installed,
