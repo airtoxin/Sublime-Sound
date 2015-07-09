@@ -53,7 +53,7 @@ class EventSound(sublime_plugin.EventListener):
         if exists(dir_path):
             sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
             if not len(sound_files) == 0:
-                winsound.PlaySound(join(dir_path, choice(sound_files)), winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_NODEFAULT)
+                winsound.PlaySound(join(dir_path, choice(sound_files)), winsound.SND_FILENAME | winsound.SND_ASYNC)
 
     @thread
     def linux_play(self, event_name):
