@@ -41,7 +41,7 @@ class EventSound(sublime_plugin.EventListener):
             event_name
         )
         if exists(dir_path):
-            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
+            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav")]
             if not len(sound_files) == 0:
                 volume = self._get_volume()
                 call(["afplay", "-v", str(volume / 100), join(dir_path, choice(sound_files))])
@@ -49,18 +49,26 @@ class EventSound(sublime_plugin.EventListener):
     @thread
     def windows_play(self, event_name):
         self.on_play_flag = False
-        dir_path = join(SOUNDS_DIR_PATH(), event_name)
+        dir_path = join(
+            SOUNDS_DIR_PATH(),
+            sublime.load_settings(SETTING_NAME).get("soundset"),
+            event_name
+        )
         if exists(dir_path):
-            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
+            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav")]
             if not len(sound_files) == 0:
                 winsound.PlaySound(join(dir_path, choice(sound_files)), winsound.SND_FILENAME | winsound.SND_ASYNC | winsound.SND_NODEFAULT)
 
     @thread
     def linux_play(self, event_name):
         self.on_play_flag = False
-        dir_path = join(SOUNDS_DIR_PATH(), event_name)
+        dir_path = join(
+            SOUNDS_DIR_PATH(),
+            sublime.load_settings(SETTING_NAME).get("soundset"),
+            event_name
+        )
         if exists(dir_path):
-            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav") ]
+            sound_files = [f for f in listdir(dir_path) if f.endswith(".wav")]
             if not len(sound_files) == 0:
                 call(["aplay", join(dir_path, choice(sound_files))])
 
